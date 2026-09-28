@@ -23,6 +23,8 @@ const img = (slug, file, size) => `img/p/${slug}/${file}-${size}.webp`;
 const creditHref = `https://sitomika.ru/?utm_source=${C.creditSlug}&amp;utm_medium=footer&amp;utm_campaign=client-sites`;
 const telHref = `tel:${C.phone}`;
 const waHref = `https://wa.me/${C.whatsapp}`;
+// Заявки уходят на почту студии через FormSubmit (у статического сайта нет своего сервера)
+const formEndpoint = `https://formsubmit.co/ajax/${C.email}`;
 const igHref = `https://instagram.com/${C.instagram}`;
 
 const featured = projects.filter(p => p.featured).sort((a, b) => a.featured - b.featured);
@@ -84,7 +86,7 @@ ${footer(rel)}
   <p>Сайт использует cookie, чтобы корректно работать и показывать встроенную карту. Подробнее — в <a href="${rel}politika-konfidentsialnosti/">политике конфиденциальности</a>.</p>
   <button class="btn btn--solid" type="button">Понятно</button>
 </div>
-<script>window.COMPANY=${JSON.stringify({ whatsapp: C.whatsapp })};</script>
+<script>window.COMPANY=${JSON.stringify({ formEndpoint, phone: C.phoneDisplay })};</script>
 <script src="${rel}js/main.js" defer></script>
 </body>
 </html>
@@ -160,10 +162,9 @@ function contactSection(rel) {
       </div>
       <div class="field"><label for="f-msg">Комментарий</label><textarea id="f-msg" name="message" rows="3" placeholder="Площадь, адрес, пожелания"></textarea></div>
       <div class="hp" aria-hidden="true"><label for="f-website">Сайт</label><input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
-      <label class="consent"><input type="checkbox" name="consent" checked required><span>Даю <a href="${rel}soglasie-na-obrabotku/">согласие на обработку персональных данных</a> и принимаю <a href="${rel}politika-konfidentsialnosti/">политику конфиденциальности</a></span></label>
+      <label class="consent"><input type="checkbox" name="consent" required><span>Даю <a href="${rel}soglasie-na-obrabotku/">согласие на обработку персональных данных</a> и принимаю <a href="${rel}politika-konfidentsialnosti/">политику конфиденциальности</a></span></label>
       <div class="form-actions">
-        <button class="btn btn--solid" type="submit">Отправить в WhatsApp <span aria-hidden="true">→</span></button>
-        <a class="form-hint" href="mailto:${C.email}">или напишите на почту</a>
+        <button class="btn btn--solid" type="submit">Отправить заявку <span aria-hidden="true">→</span></button>
       </div>
       <p class="form-error" role="status" aria-live="polite"></p>
     </form>
@@ -383,7 +384,7 @@ function privacy() {
   <p>Через форму на сайте вы можете передать: имя, номер телефона, тип объекта и текст комментария. Других персональных данных сайт не собирает.</p>
 
   <h2>2. Как передаются данные</h2>
-  <p>Сайт не хранит данные формы на сервере. После нажатия кнопки «Отправить» открывается мессенджер WhatsApp с подготовленным сообщением — данные передаются Студии только после того, как вы сами отправите это сообщение. Вы также можете связаться с нами по телефону или электронной почте.</p>
+  <p>Сайт не хранит данные формы на собственном сервере. После нажатия кнопки «Отправить заявку» данные формы передаются на электронную почту Студии через сервис доставки писем FormSubmit (formsubmit.co), который используется только для пересылки заявки. Вы также можете связаться с нами напрямую по телефону или электронной почте.</p>
 
   <h2>3. Цели обработки</h2>
   <ul>
@@ -396,7 +397,7 @@ function privacy() {
   <p>Данные обрабатываются на основании вашего <a href="${rel}soglasie-na-obrabotku/">согласия на обработку персональных данных</a>, которое вы даёте отдельно, отмечая соответствующий пункт в форме. Данные хранятся не дольше, чем этого требуют цели обработки, либо до отзыва согласия.</p>
 
   <h2>5. Передача третьим лицам</h2>
-  <p>Студия не продаёт и не передаёт ваши данные третьим лицам, за исключением случаев, предусмотренных законодательством РФ.</p>
+  <p>Студия не продаёт и не передаёт ваши данные третьим лицам, за исключением сервиса FormSubmit, через который заявка доставляется на почту Студии, и случаев, предусмотренных законодательством РФ.</p>
 
   <h2>6. Cookie и сторонние сервисы</h2>
   <p>Сайт использует cookie и локальное хранилище браузера, чтобы корректно работать (например, запомнить, что вы закрыли уведомление о cookie). На странице контактов встроена карта «Яндекс Карты», которая может устанавливать собственные cookie согласно политике Яндекса. Сервисы веб-аналитики и рекламного отслеживания на сайте не установлены.</p>
@@ -427,7 +428,7 @@ function consent() {
   <p>Ответ на мою заявку, консультация по услугам студии, подготовка предложения и заключение договора.</p>
 
   <h2>3. Действия с данными</h2>
-  <p>Сбор, запись, систематизация, хранение, уточнение, использование, удаление и уничтожение — с использованием средств автоматизации и без них. Данные не передаются третьим лицам, кроме случаев, предусмотренных законодательством РФ.</p>
+  <p>Сбор, запись, систематизация, хранение, уточнение, использование, удаление и уничтожение — с использованием средств автоматизации и без них. Для доставки заявки на почту Оператора данные передаются через сервис FormSubmit (formsubmit.co); иным третьим лицам данные не передаются, кроме случаев, предусмотренных законодательством РФ.</p>
 
   <h2>4. Срок действия и отзыв</h2>
   <p>Согласие действует до достижения целей обработки либо до его отзыва. Отозвать согласие можно в любой момент, направив письмо на <a href="mailto:${C.email}">${esc(C.email)}</a> или сообщив по телефону <a href="${telHref}">${esc(C.phoneDisplay)}</a>. После отзыва Оператор прекращает обработку и удаляет данные в срок, установленный Федеральным законом № 152-ФЗ «О персональных данных».</p>

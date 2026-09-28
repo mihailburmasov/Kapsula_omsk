@@ -109,11 +109,13 @@
     });
   }
 
-  // ---------- Lead form -> WhatsApp ----------
-  // Статический сайт без сервера: заявка открывается в WhatsApp с готовым текстом.
+  // ---------- Lead form -> email ----------
+  // Статический сайт без сервера: заявка уходит на почту студии через FormSubmit (formEndpoint из company.json).
   var form = document.querySelector('.lead-form');
   if (form) {
     var err = form.querySelector('.form-error');
+    var submit = form.querySelector('[type="submit"]');
+    var submitLabel = submit.firstChild.textContent;
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var data = new FormData(form);
@@ -129,20 +131,33 @@
         return;
       }
       err.textContent = '';
-      var lines = [
-        'Здравствуйте! Заявка с сайта студии «КАПСУЛА».',
-        'Имя: ' + name,
-        'Телефон: ' + phone
-      ];
-      var object = (data.get('object') || '').toString();
-      var msg = (data.get('message') || '').toString().trim();
-      if (object) lines.push('Объект: ' + object);
-      if (msg) lines.push('Комментарий: ' + msg);
-      var url = 'https://wa.me/' + company.whatsapp + '?text=' + encodeURIComponent(lines.join('\n'));
-      window.open(url, '_blank', 'noopener');
-      form.reset();
-      form.querySelector('[name="consent"]').checked = true;
-      err.textContent = 'Открыли WhatsApp — отправьте сообщение, и мы ответим.';
+      var payload = {
+        _subject: 'Заявка с сайта «КАПСУЛА»: ' + name,
+        _template: 'table',
+        _captcha: 'false',
+        'Имя': name,
+        'Телефон': phone,
+        'Объект': (data.get('object') || '').toString() || '—',
+        'Комментарий': (data.get('message') || '').toString().trim() || '—',
+        'Согласие на обработку ПДн': 'дано, ' + new Date().toLocaleString('ru-RU'),
+        'Страница': location.href
+      };
+      submit.disabled = true;
+      submit.firstChild.textContent = 'Отправляем… ';
+      fetch(company.formEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (r) { return r.json(); }).then(function (res) {
+        if (String(res.success) !== 'true') throw new Error(res.message || 'send failed');
+        form.reset();
+        err.textContent = 'Спасибо! Заявка отправлена — мы свяжемся с вами в ближайшее время.';
+      }).catch(function () {
+        err.textContent = 'Не удалось отправить заявку. Позвоните нам: ' + company.phone + '.';
+      }).then(function () {
+        submit.disabled = false;
+        submit.firstChild.textContent = submitLabel;
+      });
     });
   }
 
