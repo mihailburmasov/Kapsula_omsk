@@ -1,0 +1,11 @@
+{
+  "name": "kapsula-omsk",
+  "private": true,
+  "scripts": {
+    "images": "node build/images.js",
+    "build": "node build/build.js"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "КАПСУЛА",
+  "fullName": "Студия дизайна интерьера «КАПСУЛА»",
+  "tagline": "Студия дизайна интерьера",
+  "city": "Омск",
+  "phone": "+79045866674",
+  "phoneDisplay": "+7 904 586-66-74",
+  "whatsapp": "79045866674",
+  "email": "tom969@mail.ru",
+  "instagram": "kapsula_55",
+  "address": "пр. Карла Маркса, 3, офис 401, 4 этаж",
+  "addressShort": "пр. Карла Маркса, 3, оф. 401",
+  "street": "проспект Карла Маркса, 3",
+  "postalCode": "",
+  "mapQuery": "Омск, проспект Карла Маркса, 3",
+  "geo": { "lon": 73.381157, "lat": 54.980265 },
+  "hours": "",
+  "legalName": "",
+  "siteUrl": "https://mihailburmasov.github.io/Kapsula_omsk/",
+  "creditSlug": "kapsula-omsk"
+}
