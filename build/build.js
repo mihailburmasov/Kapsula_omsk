@@ -23,6 +23,8 @@ const img = (slug, file, size) => `img/p/${slug}/${file}-${size}.webp`;
 const creditHref = `https://sitomika.ru/?utm_source=${C.creditSlug}&amp;utm_medium=footer&amp;utm_campaign=client-sites`;
 const telHref = `tel:${C.phone}`;
 const waHref = `https://wa.me/${C.whatsapp}`;
+const tgHref = C.telegram;
+const maxHref = C.max;
 // Заявки уходят на почту студии через FormSubmit (у статического сайта нет своего сервера)
 const formEndpoint = `https://formsubmit.co/ajax/${C.email}`;
 const igHref = `https://instagram.com/${C.instagram}`;
@@ -99,7 +101,7 @@ function footer(rel) {
     <div class="footer-logo"><img src="${rel}img/logo-white.png" alt="${esc(C.name)} — студия дизайна" width="180" height="162" loading="lazy"></div>
     <div class="footer-col"><p class="eyebrow">Разделы</p><a href="${rel}projects/">Проекты</a><a href="${rel}#services">Направления</a><a href="${rel}#process">Как работаем</a><a href="${rel}#contacts">Контакты</a></div>
     <div class="footer-col"><p class="eyebrow">Проекты</p>${Object.entries(CATEGORIES).map(([k, v]) => `<a href="${rel}projects/#${k}">${v.label}</a>`).join('')}</div>
-    <div class="footer-col"><p class="eyebrow">Связаться</p><a href="${telHref}">${esc(C.phoneDisplay)}</a><a href="mailto:${C.email}">${esc(C.email)}</a><a href="${waHref}" target="_blank" rel="noopener">WhatsApp</a><a href="${igHref}" target="_blank" rel="noopener">Instagram*</a></div>
+    <div class="footer-col"><p class="eyebrow">Связаться</p><a href="${telHref}">${esc(C.phoneDisplay)}</a><a href="mailto:${C.email}">${esc(C.email)}</a><a href="${waHref}" target="_blank" rel="noopener">WhatsApp</a><a href="${tgHref}" target="_blank" rel="noopener">Telegram</a><a href="${maxHref}" target="_blank" rel="noopener">MAX</a><a href="${igHref}" target="_blank" rel="noopener">Instagram*</a></div>
     <div class="footer-col"><p class="eyebrow">Адрес</p><span>${esc(C.city)},<br>${esc(C.address)}</span></div>
   </div>
   <div class="footer-bottom">
@@ -147,7 +149,7 @@ function contactSection(rel) {
         <div><dt class="eyebrow">Телефон</dt><dd><a class="contact-phone" href="${telHref}">${esc(C.phoneDisplay)}</a></dd></div>
         <div><dt class="eyebrow">Почта</dt><dd><a href="mailto:${C.email}">${esc(C.email)}</a></dd></div>
         <div><dt class="eyebrow">Адрес</dt><dd>${esc(C.city)}, ${esc(C.address)}</dd></div>
-        <div><dt class="eyebrow">Мессенджеры и соцсети</dt><dd class="socials"><a href="${waHref}" target="_blank" rel="noopener">WhatsApp</a><a href="${igHref}" target="_blank" rel="noopener">Instagram* @${esc(C.instagram)}</a></dd></div>
+        <div><dt class="eyebrow">Мессенджеры и соцсети</dt><dd class="socials"><a href="${waHref}" target="_blank" rel="noopener">WhatsApp</a><a href="${tgHref}" target="_blank" rel="noopener">Telegram</a><a href="${maxHref}" target="_blank" rel="noopener">MAX</a><a href="${igHref}" target="_blank" rel="noopener">Instagram* @${esc(C.instagram)}</a></dd></div>
       </dl>
     </div>
     <form class="form lead-form reveal" novalidate>
