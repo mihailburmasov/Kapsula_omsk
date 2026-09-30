@@ -28,6 +28,23 @@ const maxHref = C.max;
 // Заявки уходят на почту студии через FormSubmit (у статического сайта нет своего сервера)
 const formEndpoint = `https://formsubmit.co/ajax/${C.email}`;
 const igHref = `https://instagram.com/${C.instagram}`;
+// Яндекс Метрика: код выдан клиентом, оставлен дословно. Вебвизор включён,
+// поэтому политика конфиденциальности и cookie-баннер о нём предупреждают.
+const METRIKA_ID = '113174686';
+const metrika = `<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=METRIKA_ID',
+ 'ym');
+
+    ym(METRIKA_ID, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->`.replace(/METRIKA_ID/g, METRIKA_ID);
+const metrikaNoscript = `<noscript><div><img src="https://mc.yandex.ru/watch/${METRIKA_ID}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>`;
 
 const featured = projects.filter(p => p.featured).sort((a, b) => a.featured - b.featured);
 const HERO = { slug: 'kvartira-maslennikova-58', file: '01' };
@@ -68,8 +85,10 @@ function layout({ rel, title, description, canonical, body, ogImage, jsonLd, cur
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${rel}css/style.css">
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : ''}
+${metrika}
 </head>
 <body${light ? ' class="page-light"' : ''}>
+${metrikaNoscript}
 <a class="visually-hidden skip-link" href="#main">Перейти к содержимому</a>
 <header class="site-header">
   <a class="brand" href="${rel || './'}" aria-label="${esc(C.name)} — на главную"><img src="${rel}img/mark-white.png" alt="" width="28" height="30"><span>${esc(C.name)}</span></a>
@@ -85,7 +104,7 @@ ${body}
 </main>
 ${footer(rel)}
 <div class="cookie" role="region" aria-label="Уведомление о cookie">
-  <p>Сайт использует cookie, чтобы корректно работать и показывать встроенную карту. Подробнее — в <a href="${rel}politika-konfidentsialnosti/">политике конфиденциальности</a>.</p>
+  <p>Сайт использует cookie, чтобы корректно работать, показывать встроенную карту и собирать обезличенную статистику посещений через Яндекс Метрику. Подробнее — в <a href="${rel}politika-konfidentsialnosti/">политике конфиденциальности</a>.</p>
   <button class="btn btn--solid" type="button">Понятно</button>
 </div>
 <script>window.COMPANY=${JSON.stringify({ formEndpoint, phone: C.phoneDisplay })};</script>
@@ -399,17 +418,18 @@ function privacy() {
   <p>Данные обрабатываются на основании вашего <a href="${rel}soglasie-na-obrabotku/">согласия на обработку персональных данных</a>, которое вы даёте отдельно, отмечая соответствующий пункт в форме. Данные хранятся не дольше, чем этого требуют цели обработки, либо до отзыва согласия.</p>
 
   <h2>5. Передача третьим лицам</h2>
-  <p>Студия не продаёт и не передаёт ваши данные третьим лицам, за исключением сервиса FormSubmit, через который заявка доставляется на почту Студии, и случаев, предусмотренных законодательством РФ.</p>
+  <p>Студия не продаёт ваши данные и не передаёт их третьим лицам, за исключением: сервиса FormSubmit, через который заявка доставляется на почту Студии; сервиса «Яндекс Метрика», который обрабатывает обезличенные данные о посещении сайта; и случаев, предусмотренных законодательством РФ.</p>
 
   <h2>6. Cookie и сторонние сервисы</h2>
-  <p>Сайт использует cookie и локальное хранилище браузера, чтобы корректно работать (например, запомнить, что вы закрыли уведомление о cookie). На странице контактов встроена карта «Яндекс Карты», которая может устанавливать собственные cookie согласно политике Яндекса. Сервисы веб-аналитики и рекламного отслеживания на сайте не установлены.</p>
+  <p>Сайт использует cookie и локальное хранилище браузера, чтобы корректно работать (например, запомнить, что вы закрыли уведомление о cookie). На странице контактов встроена карта «Яндекс Карты», которая может устанавливать собственные cookie согласно политике Яндекса.</p>
+  <p>На сайте установлен счётчик «Яндекс Метрика» (номер ${METRIKA_ID}). Он собирает обезличенные сведения о посещении: страницы, которые вы открывали, источник перехода, дату и время визита, тип устройства, операционную систему, браузер, разрешение экрана, примерный регион по IP-адресу, а также действия на странице — клики, прокрутку и перемещение курсора. В счётчике включена функция «Вебвизор», которая записывает эти действия для последующего просмотра; содержимое полей формы при записи скрывается. Данные обрабатываются на серверах ООО «Яндекс» на условиях <a href="https://yandex.ru/legal/confidential/" target="_blank" rel="noopener">политики конфиденциальности Яндекса</a>. Отказаться от сбора статистики можно, отключив cookie в настройках браузера или установив <a href="https://yandex.ru/support/metrica/general/opt-out.html" target="_blank" rel="noopener">блокировщик Яндекс Метрики</a>. Иных сервисов веб-аналитики и рекламного отслеживания на сайте не установлено.</p>
 
   <h2>7. Ваши права</h2>
   <p>Вы вправе запросить сведения об обработке ваших данных, потребовать их уточнения или удаления, а также отозвать согласие. Для этого напишите на <a href="mailto:${C.email}">${esc(C.email)}</a> или позвоните по телефону <a href="${telHref}">${esc(C.phoneDisplay)}</a>.</p>
 
   <h2>8. Контакты оператора</h2>
   <p>${esc(C.fullName)}<br>${esc(C.city)}, ${esc(C.address)}<br>Телефон: ${esc(C.phoneDisplay)}<br>E-mail: ${esc(C.email)}</p>
-  <p>Редакция от 28.09.2026.</p>
+  <p>Редакция от 30.09.2026.</p>
 </article>`;
   return layout({ rel, canonical: 'politika-konfidentsialnosti/', body, light: true, title: `Политика конфиденциальности — ${C.name}`, description: `Политика обработки персональных данных студии дизайна интерьера «${C.name}», ${C.city}.` });
 }
@@ -477,6 +497,21 @@ async function main() {
   const urls = ['', 'projects/', 'politika-konfidentsialnosti/', 'soglasie-na-obrabotku/', ...projects.map(p => `projects/${p.slug}/`)];
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${C.siteUrl}${u}</loc></url>`).join('\n')}\n</urlset>\n`);
   write('.nojekyll', '');
+  // Apache на обычном хостинге: своя 404-я и сжатие. Редирект на https
+  // добавляется отдельно, после выпуска сертификата.
+  write('.htaccess', `ErrorDocument 404 /404.html
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml application/xml
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+`);
   await ogImage();
   console.log('built', urls.length, 'pages');
 }
