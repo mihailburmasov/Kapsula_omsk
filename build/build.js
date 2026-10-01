@@ -502,12 +502,19 @@ async function main() {
   // без выпущенного сертификата он кладёт сайт, поэтому флаг включается
   // вручную после Let's Encrypt.
   const host = new URL(C.siteUrl).host;
-  // Хостинг держит Apache за nginx, поэтому %{HTTPS} на https-запросе может
-  // быть off. Проверяем и заголовок от прокси — иначе получится петля.
+  // Боевой домен редиректим, технический адрес хостинга оставляем на http —
+  // по нему удобно проверять сервер, когда с доменом что-то не так.
+  const dot = '[.]';
+  // Схему запроса проверяем двумя способами: если Apache стоит за прокси,
+  // на https-запросе %{HTTPS} бывает off, и одного этого условия хватило бы
+  // для бесконечной петли. Что именно отдаёт сервер на https — проверяется
+  // на нём самом перед включением флага, порядок описан в хендофе.
+  const re = host.split('.').join(dot);
   const redirect = C.httpsReady ? `RewriteEngine On
 
 RewriteCond %{HTTPS} !=on
 RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteCond %{HTTP_HOST} ^(www[.])?${re}$ [NC]
 RewriteRule ^ https://${host}%{REQUEST_URI} [R=301,L]
 
 RewriteCond %{HTTP_HOST} ^www[.] [NC]
