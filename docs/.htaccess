@@ -1,3 +1,13 @@
+RewriteEngine On
+
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteCond %{HTTP_HOST} ^(www[.])?kapsula55[.]ru$ [NC]
+RewriteRule ^ https://kapsula55.ru%{REQUEST_URI} [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^www[.] [NC]
+RewriteRule ^ https://kapsula55.ru%{REQUEST_URI} [R=301,L]
+
 ErrorDocument 404 /404.html
 
 <IfModule mod_deflate.c>
