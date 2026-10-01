@@ -497,9 +497,24 @@ async function main() {
   const urls = ['', 'projects/', 'politika-konfidentsialnosti/', 'soglasie-na-obrabotku/', ...projects.map(p => `projects/${p.slug}/`)];
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${C.siteUrl}${u}</loc></url>`).join('\n')}\n</urlset>\n`);
   write('.nojekyll', '');
-  // Apache на обычном хостинге: своя 404-я и сжатие. Редирект на https
-  // добавляется отдельно, после выпуска сертификата.
-  write('.htaccess', `ErrorDocument 404 /404.html
+  // Apache на обычном хостинге: своя 404-я и сжатие.
+  // Редирект на https пишется только при "httpsReady": true в company.json:
+  // без выпущенного сертификата он кладёт сайт, поэтому флаг включается
+  // вручную после Let's Encrypt.
+  const host = new URL(C.siteUrl).host;
+  // Хостинг держит Apache за nginx, поэтому %{HTTPS} на https-запросе может
+  // быть off. Проверяем и заголовок от прокси — иначе получится петля.
+  const redirect = C.httpsReady ? `RewriteEngine On
+
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://${host}%{REQUEST_URI} [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^www[.] [NC]
+RewriteRule ^ https://${host}%{REQUEST_URI} [R=301,L]
+
+` : '';
+  write('.htaccess', `${redirect}ErrorDocument 404 /404.html
 
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml application/xml
